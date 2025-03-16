@@ -1,0 +1,32 @@
+:log warning "PPPOE $user log OFF.";
+
+:local nama "$user";
+:local secret [/ppp secret print count];
+:local status value="";
+:foreach pppuser in=[/ppp secret find ] do={
+ :local pppname [/ppp secret get $pppuser name]
+ :do {
+  :local tmp [/ppp active get [find where name="$pppname"]]  
+ } on-error={
+  ##:put $pppname
+  :set status value=($status.$pppname.",%0A")
+ }
+};
+
+:local hitung [:len [/system script find where name=$nama]];
+:if ( $hitung = 0 ) do={
+/system script add name=$nama source="0" comment="CEK TOTAL GANGGUAN";
+};
+
+:local getjumlah [:put ([/system script get [find name=$nama] source] + 1)];
+[/system script set source=$getjumlah "$nama"];
+
+:local active [/ppp active print count]; 
+:local terputus ($secret - $active)
+/tool fetch http-method=post http-data="text=\E2\9D\8C *OFFLINE*
+\F0\9F\91\A5 Nama  : *$nama*
+
+User Terputus *($terputus)*:
+*$status*
+__
+**" url="https://api.telegram.org/botGANTI-TOKEN-TELEGRAM-MU/SendMessage?chat_id=GANTI-CHAT-ID-TELEGRAM&parse_mode=markdown" mode=https keep-result=no http-header-field="Content-Type: application/x-www-form-urlencoded; charset=UTF-8, User-Agent: Firefox";
