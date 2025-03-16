@@ -1,0 +1,43 @@
+:log warning "PPPOE $user login kembali.";
+:local datetime "ðŸ“…-Tanggal: $[/system clock get date] %0Aâ°-Jam: $[/system clock get time]";
+:local nama "$user";
+:local ips [/ppp active get [find name=$nama] address];
+:local secret [/ppp secret print count];
+:local status value="";
+:foreach pppuser in=[/ppp secret find ] do={
+ :local pppname [/ppp secret get $pppuser name]
+ :do {
+  :local tmp [/ppp active get [find where name="$pppname"]]
+ } on-error={
+  ##:put $pppname
+  :set status value=($status.$pppname.",%0A")
+ }
+};
+
+:local hitung [:len [/system script find where name=$nama]];
+:if ( $hitung = 0 ) do={
+/system script add name=$nama source="0" comment="CEK TOTAL GANGGUAN";
+};
+
+:local getjumlah [:put ([/system script get [find name=$nama] source] + 1)];
+[/system script set source=$getjumlah "$nama"];
+
+:local active [/ppp active print count]; 
+:local terputus ($secret - $active)
+/tool fetch http-method=post http-data="text=\E2\9C\85 *ONLINE*
+*$datetime*
+\F0\9F\91\A5 Nama  : *$nama*
+\F0\9F\86\94 IP Address : *$ips*
+ðŸ“¡PAKET : 1
+ðŸ“ŒALAMAT : PUSAT
+*STATUS GANGGUAN*
+\F0\9F\93\B4 Jmlh Gangguan : *$[/system script get [find name=$nama] source]x Terputus*
+============================
+*$secret*ðŸ¦¢ Ekor Total Pelanggan
+*$active* ðŸ¦¢ Ekor Total Active
+*$terputus* ðŸ¦¢ Ekor Modem Mati
+============================
+*Daftar User Terputus/Modem Mati * *($terputus Ekor ðŸ¦†)*:
+*$status*
+__
+**" url="https://api.telegram.org/bot7883550047:AAGfm8-_arZuzLdSuwVQXzq2VH_EuJjY_iA/SendMessage?chat_id=-4538732696&parse_mode=markdown" mode=https keep-result=no http-header-field="Content-Type: application/x-www-form-urlencoded; charset=UTF-8, User-Agent: Firefox";
