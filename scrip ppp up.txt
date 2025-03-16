@@ -40,4 +40,4 @@
 *Daftar User Terputus/Modem Mati * *($terputus Ekor ðŸ¦†)*:
 *$status*
 __
-**" url="https://api.telegram.org/bot7883550047:AAGfm8-_arZuzLdSuwVQXzq2VH_EuJjY_iA/SendMessage?chat_id=-4538732696&parse_mode=markdown" mode=https keep-result=no http-header-field="Content-Type: application/x-www-form-urlencoded; charset=UTF-8, User-Agent: Firefox";
+**" url="https://api.telegram.org/botGANTI-TOKEN-TELEGRAM-MU/SendMessage?chat_id=GANTI-CHAT-ID-TELEGRAM6&parse_mode=markdown" mode=https keep-result=no http-header-field="Content-Type: application/x-www-form-urlencoded; charset=UTF-8, User-Agent: Firefox";
